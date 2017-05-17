@@ -1,10 +1,10 @@
 package com.tangshilong.spider;
 
+import com.tangshilong.po.ThreadInfo;
+
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import com.tangshilong.po.ThreadInfo;
 
 /**
  * http://yanbao.stock.hexun.com/dzgg761417.shtml
@@ -13,9 +13,9 @@ import com.tangshilong.po.ThreadInfo;
  *
  */
 public class PdfInfoSpider {
-	public static final int MAX = 4030;
+	private static final int MAX = 4030;
 
-	public static final int MAX_THREAD = 40;
+	private static final int MAX_THREAD = 40;
 
 	public static void main(String[] args) throws IOException {
 		ExecutorService pool = Executors.newFixedThreadPool(MAX_THREAD);

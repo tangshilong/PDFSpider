@@ -1,47 +1,39 @@
 package com.tangshilong.po;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.tangshilong.dao.InfoDao;
+import com.tangshilong.util.CookieUtil;
+import com.xiechanglei.code.utils.http.HttpRequest;
+import com.xiechanglei.code.utils.http.HttpResponse;
+import com.xiechanglei.code.utils.http.HttpUtil;
+import com.xiechanglei.code.web.page.catcher.CatchHandler;
+import com.xiechanglei.code.web.page.catcher.Resolver;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import com.tangshilong.dao.InfoDao;
-import com.tangshilong.util.CookieUtil;
-import com.xiechanglei.code.utils.http.HttpUtil;
-import com.xiechanglei.code.utils.http.RequestInfo;
-import com.xiechanglei.code.utils.http.ResponseInfo;
-import com.xiechanglei.code.web.page.catcher.CatchHandler;
-import com.xiechanglei.code.web.page.catcher.Resolver;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ThreadInfo extends Thread {
 	private int num;
 
-	public int getNum() {
-		return num;
-	}
-
-	public void setNum(int num) {
-		this.num = num;
-	}
-
-	@Override
+    @Override
 	public void run() {
 		int num2 = this.num;
 		String homeUrl = "http://yanbao.stock.hexun.com/listnews1_" + num2 + ".shtml";
-		RequestInfo request = RequestInfo.createDefaultRequestInfo();
-		request.setCookies(CookieUtil.getCookie());
-		request.setCharset("GBK");
-		ResponseInfo responseInfo;
+		HttpRequest requestInfo = HttpRequest.createDefaultRequestInfo();
+		requestInfo.setCookies(CookieUtil.getCookie());
+		requestInfo.setCharset("GBK");
+		HttpResponse responseInfo;
 		try {
-			responseInfo = HttpUtil.get(homeUrl, request);
+			responseInfo = HttpUtil.get(homeUrl, requestInfo);
 			CatchHandler.parse(responseInfo.getContent(), new Resolver() {
 				@Override
 				public void success() {
 					Elements elements = $(".tab_cont tr").getElements();
-					List<Info> infos = new ArrayList<Info>();
+					List<Info> infos = new ArrayList<
+                            >();
 					for (Element element : elements) {
-						if (element.text().indexOf("研究报告标题 研报来源 研报作者 投资评级 研报日期 摘要") == -1) {
+						if (!element.text().contains("研究报告标题 研报来源 研报作者 投资评级 研报日期 摘要")) {
 							// 信息分开存储
 							Info info = new Info();
 							info.setName(element.select("td:eq(0)").text());

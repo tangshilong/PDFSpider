@@ -1,27 +1,23 @@
 package com.tangshilong.dao;
 
-import java.util.List;
-
+import com.mtzn.code.log.HibernateUtil;
+import com.tangshilong.po.Info;
+import com.tangshilong.spider.PdfDownSprider;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
-import com.mtzn.code.log.HibernateUtil;
-import com.tangshilong.po.Info;
-import com.tangshilong.spider.PdfDownSprider;
+import java.util.List;
 
 public class InfoDao {
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({"unchecked"})
 	public static List<Info> getListByI(int i) throws Exception {
 		try {
 			Session session = HibernateUtil.currentSession();
 			SQLQuery query = session
 					.createSQLQuery("select * from info where down = ? and id < 115000 and MOD(id,?) = ? limit 10");
-			List<Info> infos = query.addEntity(Info.class).setInteger(0, 0).setInteger(1, PdfDownSprider.MAX_THREAD)
+			return (List<Info>) query.addEntity(Info.class).setInteger(0, 0).setInteger(1, PdfDownSprider.MAX_THREAD)
 					.setInteger(2, i).list();
-			return infos;
-		} catch (Exception e) {
-			throw e;
 		} finally {
 			HibernateUtil.closeSession();
 		}
@@ -36,7 +32,9 @@ public class InfoDao {
 					.executeUpdate();
 			transaction.commit();
 		} catch (Exception e) {
-			transaction.rollback();
+			if (transaction != null) {
+				transaction.rollback();
+			}
 			throw e;
 		} finally {
 			HibernateUtil.closeSession();
@@ -57,8 +55,6 @@ public class InfoDao {
 			sqlQuery.setString(5, info.getDate());
 			sqlQuery.executeUpdate();
 			transaction.commit();
-		} catch (Exception e) {
-			throw e;
 		} finally {
 			HibernateUtil.closeSession();
 		}

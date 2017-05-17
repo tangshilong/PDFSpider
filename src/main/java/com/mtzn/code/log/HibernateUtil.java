@@ -10,7 +10,7 @@ import org.hibernate.service.ServiceRegistry;
 import com.tangshilong.po.Info;
 
 public class HibernateUtil {
-	public static final SessionFactory sessionFactory;
+	private static final SessionFactory sessionFactory;
 	static {
 		try {
 			Configuration cfg = new Configuration().configure();
@@ -24,7 +24,7 @@ public class HibernateUtil {
 		}
 	}
 
-	public static final ThreadLocal<Session> session = new ThreadLocal<Session>();
+	private static final ThreadLocal<Session> session = new ThreadLocal<>();
 
 	public static Session currentSession() throws HibernateException {
 		Session s = session.get();

@@ -1,34 +1,20 @@
 package com.tangshilong.po;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.log4j.lf5.util.StreamUtils;
-
 import com.tangshilong.dao.InfoDao;
 import com.tangshilong.util.CookieUtil;
 import com.xiechanglei.code.web.page.catcher.CatchHandler;
 import com.xiechanglei.code.web.page.catcher.RequestInfo;
 import com.xiechanglei.code.web.page.catcher.Resolver;
+import org.apache.log4j.lf5.util.StreamUtils;
+
+import java.io.*;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DownloadThread implements Runnable {
 	private int i;
-
-	public int getI() {
-		return i;
-	}
-
-	public void setI(int i) {
-		this.i = i;
-	}
 
 	public DownloadThread(int i) {
 		this.i = i;
@@ -100,7 +86,7 @@ public class DownloadThread implements Runnable {
 		}
 	}
 
-	public static void downloadUrl(String url, File file) throws MalformedURLException, IOException {
+	private static void downloadUrl(String url, File file) throws IOException {
 		URLConnection connection = new URL(url).openConnection();
 		connection.setRequestProperty("User-Agent",
 				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36");
@@ -114,6 +100,7 @@ public class DownloadThread implements Runnable {
 			outputStream = new FileOutputStream(file);
 			StreamUtils.copy(inputStream, outputStream);
 		} catch (IOException e) {
+			assert outputStream != null;
 			outputStream.close();
 			outputStream = null;
 			e.printStackTrace();
@@ -130,16 +117,15 @@ public class DownloadThread implements Runnable {
 
 	private static String rename(Info info) {
 		String[] names = info.getWriter().split(" ");
-		String writer = "";
+		StringBuilder writer = new StringBuilder();
 		for (int i = 0; i < names.length; i++) {
 			if (i == 0) {
-				writer += names[i];
+				writer.append(names[i]);
 			} else {
-				writer += "," + names[i];
+				writer.append(",").append(names[i]);
 			}
 		}
-		String filename = info.getName() + "-" + info.getSource() + "-" + writer + "-" + info.getLevel() + "-"
+		return info.getName() + "-" + info.getSource() + "-" + writer + "-" + info.getLevel() + "-"
 				+ info.getDate();
-		return filename;
 	}
 }

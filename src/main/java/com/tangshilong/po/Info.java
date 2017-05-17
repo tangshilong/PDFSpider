@@ -1,10 +1,3 @@
-/**
- * 
- */
-/**
- * @author tangshilong
- *
- */
 package com.tangshilong.po;
 
 import java.io.Serializable;
@@ -22,19 +15,6 @@ public class Info implements Serializable {
 
 	public String getUrl() {
 		return url;
-	}
-
-	public Info(int id, String url, String name, String source, String writer, String level, String date,
-			Integer down) {
-		super();
-		this.id = id;
-		this.url = url;
-		this.name = name;
-		this.source = source;
-		this.writer = writer;
-		this.level = level;
-		this.date = date;
-		this.down = down;
 	}
 
 	public void setUrl(String url) {
